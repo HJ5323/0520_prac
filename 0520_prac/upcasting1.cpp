@@ -21,7 +21,7 @@ public:
     Snack(string category, float price, string productName, string manufacturer)
         : category(category), price(price), productName(productName), manufacturer(manufacturer) {}
 
-    virtual ~Snack() {} // 가상 소멸자
+    // virtual ~Snack() {} // 가상 소멸자, dynamic_cast 사용할 때
 
     string getCategory() { // protected로 선언된 category에 접근 가능하게 해줌
         return category;
@@ -69,6 +69,7 @@ int main() {
     Chocolate chocolate_2("bar", 1500, "Milk Bar", "aa");
 
     // 업캐스팅
+    // 자녀 클래스 고유 메소드, 필드 변수 사용 불가
     Snack* snackBasket[4] = { &candy_1, &candy_2, &chocolate_1, &chocolate_2 };
 
     cout << "[ Category : Product Name -- Snack Basket ]\n" << endl;
@@ -78,12 +79,16 @@ int main() {
     }
 
     cout << "\n[ ( Manufacturer ) : Product Name -- Snack Basket ]" << endl;
+    
     //다운캐스팅
+    // 업 캐스팅 된 것을 다시 다운캐스팅하여 자식 클래스 전용 메소드 사용
+    // 자녀클래스 갖고 있는 데이터가 복구됨
     for (int i = 0; i < 4; i++) {
-        if (Candy* candy = dynamic_cast<Candy*>(snackBasket[i])) {
-            candy->printManufacturer();
+        if (Candy* candy = (Candy*)snackBasket[i]) {
+            candy->printManufacturer(); // ((Candy*)snackBasket[i])->printManufacturer();
         }
-        else if (Chocolate* chocolate = dynamic_cast<Chocolate*>(snackBasket[i])) {
+
+        else if (Chocolate* chocolate = (Chocolate*)snackBasket[i]) {
             chocolate->printManufacturer();
         }
     }
